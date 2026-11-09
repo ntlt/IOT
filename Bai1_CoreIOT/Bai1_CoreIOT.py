@@ -2,8 +2,10 @@ print("Hello Core IOT")
 import paho.mqtt.client as mqttclient
 import time
 import json
+import random
 import socket
 
+# Cấu hình kết nối MQTT Broker của CoreIoT
 BROKER_ADDRESS = "app.coreiot.io"
 BROKER_FALLBACK_IP = "213.199.63.66"
 PORT = 1883
@@ -67,14 +69,12 @@ if not connect_with_retry():
     # Tùy chọn: thoát chương trình hoặc tiếp tục chạy ở chế độ offline
     # raise SystemExit(1)
 
-temp = 30
-humi = 50
 light_intesity = 100
 counter = 0
 while True:
+    temp = random.randint(20, 35)
+    humi = random.randint(40, 80)
     collect_data = {'temperature': temp, 'humidity': humi, 'light': light_intesity}
-    temp += 1
-    humi += 1
     light_intesity += 1
     client.publish('v1/devices/me/telemetry', json.dumps(collect_data), 1)
     time.sleep(5)
