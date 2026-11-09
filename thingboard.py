@@ -7,8 +7,8 @@ import socket
 BROKER_ADDRESS = "app.coreiot.io"
 BROKER_FALLBACK_IP = "213.199.63.66"
 PORT = 1883
-ACCESS_TOKEN = "***************"
-ACCESS_USERNAME = "***************"
+ACCESS_TOKEN = "IOT_DEVICE_A_"
+ACCESS_USERNAME = "IOT_DEVICE_A_"
 
 def subscribed(client, userdata, mid, granted_qos):
     print("Subscribed...")
@@ -31,7 +31,7 @@ def connected(client, usedata, flags, rc):
     else:
         print("Connection is failed, rc =", rc)
 
-client = mqttclient.Client("***************")
+client = mqttclient.Client("IOT_DEVICE_A_")
 client.username_pw_set(ACCESS_USERNAME, ACCESS_TOKEN)
 
 client.on_connect = connected
