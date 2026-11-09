@@ -3,14 +3,26 @@ import paho.mqtt.client as mqttclient
 import time
 import json
 import random
+import os
 import socket
+from dotenv import load_dotenv
 
 # Cấu hình kết nối MQTT Broker của CoreIoT
 BROKER_ADDRESS = "app.coreiot.io"
 BROKER_FALLBACK_IP = "213.199.63.66"
 PORT = 1883
-ACCESS_TOKEN = "IOT_DEVICE_A_"
-ACCESS_USERNAME = "IOT_DEVICE_A_"
+
+load_dotenv()
+
+def get_required_env(name):
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"Missing required environment variable: {name}")
+    return value
+
+ACCESS_TOKEN = get_required_env("ACCESS_TOKEN")
+ACCESS_USERNAME = get_required_env("ACCESS_USERNAME")
+DEVICE_CLIENT_ID = get_required_env("DEVICE_CLIENT_ID")
 
 def subscribed(client, userdata, mid, granted_qos):
     print("Subscribed...")
@@ -33,7 +45,7 @@ def connected(client, usedata, flags, rc):
     else:
         print("Connection is failed, rc =", rc)
 
-client = mqttclient.Client("IOT_DEVICE_A_")
+client = mqttclient.Client(DEVICE_CLIENT_ID)
 client.username_pw_set(ACCESS_USERNAME, ACCESS_TOKEN)
 
 client.on_connect = connected
