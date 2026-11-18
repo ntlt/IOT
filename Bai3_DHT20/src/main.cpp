@@ -4,6 +4,11 @@
 void setup() 
 {   // Initialize serial communication for debugging
     Serial.begin(115200);
+    const unsigned long serialWaitStarted = millis();
+    while (!Serial && millis() - serialWaitStarted < 5000) 
+    {
+        delay(10);
+    }
 
     // Create a task for monitoring temperature and humidity
     const BaseType_t taskCreated = xTaskCreate(

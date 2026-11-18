@@ -107,6 +107,13 @@ void temp_humi_monitor(void *pvParameters) {
     }
 
     while (true) {
+        while (Serial.available() > 0) {
+            const int command = Serial.read();
+            if (command == 'i' || command == 'I') {
+                scanI2CBus();
+            }
+        }
+
         mqttClient.loop();
         const int status = dht20.read();
         if (status != DHT20_OK) {
