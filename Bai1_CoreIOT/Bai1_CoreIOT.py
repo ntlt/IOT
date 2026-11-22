@@ -35,8 +35,8 @@ def recv_message(client, userdata, message):
         if jsonobj['method'] == "setValue":
             temp_data['value'] = jsonobj['params']
             client.publish('v1/devices/me/attributes', json.dumps(temp_data), 1)
-    except:
-        pass
+    except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as error:
+        print("Invalid RPC message:", error)
 
 def connected(client, usedata, flags, rc):
     if rc == 0:
@@ -45,12 +45,18 @@ def connected(client, usedata, flags, rc):
     else:
         print("Connection is failed, rc =", rc)
 
+def disconnected(client, userdata, rc):
+    if rc != 0:
+        print("Unexpected MQTT disconnection. Paho MQTT will retry.")
+
 client = mqttclient.Client(DEVICE_CLIENT_ID)
 client.username_pw_set(ACCESS_USERNAME, ACCESS_TOKEN)
+client.reconnect_delay_set(min_delay=1, max_delay=30)
 
 client.on_connect = connected
 client.on_subscribe = subscribed
 client.on_message = recv_message
+client.on_disconnect = disconnected
 
 # --- Kết nối với cơ chế thử lại và fallback IP ---
 def resolve_broker():
